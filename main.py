@@ -11,7 +11,7 @@ def main():
 	#		print("\nID: " + account.id)
 	#		print("Balance: " + account.balance)
 	#		print("Native Balance: " + account.nativeBalance)
-	difference = GetDifference(accounts)
+	difference = GetPriceDifference(accounts)
 	print(difference)
 
 
@@ -28,12 +28,14 @@ def GetAccounts(jsonAccounts):
 		account.nativeCurrency = jsonAccount["native_balance"]["currency"]
 
 		if (float(account.balance) > 0.0):
-			print("\n\n-------------------------------Account---------------------------------------------")
+			print("\n\n_______________________________Account_____________________________________________")
 			print("Account ID: ", account.accountId)
 			print("Balance: ", account.balance, account.accountCurrency)
 			print("Native Balance: ", account.nativeBalance, account.nativeCurrency)
+			print("-------------------------------Transactions---------------------------------------------")
 			account.transactions = GetTransactions(account.accountId)
-			print("-----------------------------------End Account-----------------------------------------")
+			print("-------------------------------End Transactions---------------------------------------------")
+			print("_______________________________End Account_____________________________________________")
 		accounts.append(account)
 
 	return accounts
@@ -53,18 +55,18 @@ def GetTransactions(accountId):
 		transaction.nativeAmount = jsonTransaction["native_amount"]["amount"]
 		transaction.nativeCurrency = jsonTransaction["native_amount"]["currency"]
 
-		print("\n||||||||||||||||||||||||||||||Transactions||||||||||||||||||||||||||||||||||||||||||||||")
+		print("-------------------------------Transaction---------------------------------------------")
 		print("Transaction ID: ", transaction.transactionId)
 		print("Type: ", transaction.type)
 		print("Amount: ", transaction.amount, transaction.amountCurrency)
 		print("Native Amount: ", transaction.nativeAmount, transaction.nativeCurrency)
-		print("|||||||||||||||||||||||||||||||||End Transactions|||||||||||||||||||||||||||||||||||||||||||")
+		print("-------------------------------End Transaction---------------------------------------------")
 
 		transactions.append(transaction)
 
 	return transactions
 
-def GetDifference(accounts):
+def GetPriceDifference(accounts):
 	pass
 
 
