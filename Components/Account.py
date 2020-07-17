@@ -1,8 +1,10 @@
 class Account():
 	def __init__(self):
-		self.accountId = None
-		self.balance = None
-		self.accountCurrency = None
-		self.nativeBalance = None
-		self.nativeCurrency = None
-		self.transactions = None
+		self.AccountId = None
+		self.Balance = None
+		self.AccountCurrency = None
+		self.NativeBalance = None
+		self.NativeCurrency = None
+		self.Transactions = None
+		self.ExchangeRate = None
+		self.DeltaValue = None

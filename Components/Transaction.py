@@ -1,8 +1,9 @@
 class Transaction():
 	def __init__(self):
-		self.transactionId = None
-		self.transactionType = None
-		self.amount = None
-		self.amountCurrency = None
-		self.nativeAmount = None
-		self.nativeCurrency = None
+		self.TransactionId = None
+		self.TransactionType = None
+		self.Amount = None
+		self.AmountCurrency = None
+		self.NativeAmount = None
+		self.NativeCurrency = None
+		self.TotalInvested = None
