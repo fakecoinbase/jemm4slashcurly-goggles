@@ -7,4 +7,6 @@ class Account():
 		self.NativeCurrency = None
 		self.Transactions = None
 		self.ExchangeRate = None
+		self.TotalBought = None
+		self.TotalSold = None
 		self.DeltaValue = None

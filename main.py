@@ -6,7 +6,6 @@ import json
 
 def main():
 	jsonAccounts = json.loads(json.dumps(Client.get_accounts()))
-
 	accounts = GetAccounts(jsonAccounts)
 
 
@@ -22,21 +21,24 @@ def GetAccounts(jsonAccounts):
 		account.NativeBalance = jsonAccount["native_balance"]["amount"]
 		account.NativeCurrency = jsonAccount["native_balance"]["currency"]
 		account.ExchangeRate = GetCurrentExchangeRate(account.AccountCurrency, account.NativeCurrency)
-		account.DeltaValue = GetDeltaValue(account.Balance, account.NativeBalance, account.ExchangeRate)
-
 
 		print("\n\n_______________________________Account_____________________________________________")
 		print("Account ID: ", account.AccountId)
 		print("Balance: ", account.Balance, account.AccountCurrency)
 		print("Native Balance: ", account.NativeBalance, account.NativeCurrency)
-		print("Current exchange rate", account.ExchangeRate, account.NativeCurrency)
+		print("Current exchange rate: ", account.ExchangeRate, account.NativeCurrency)
 		print("-------------------------------Gain/Loss---------------------------------------------")
 		print("Gain/Loss: ", account.DeltaValue)
 		print("-------------------------------End Gain/Loss---------------------------------------------")
 
-		# print("-------------------------------Transactions---------------------------------------------")
-		account.transactions = GetTransactions(account.AccountId)
-		# print("-------------------------------End Transactions---------------------------------------------")
+		print("-------------------------------Transactions---------------------------------------------")
+		account.Transactions = GetTransactions(account.AccountId)
+		print("-------------------------------End Transactions---------------------------------------------")
+		account.TotalBought = GetTotalBought(account.Transactions)
+		account.TotalSold = GetTotalSold(account.Transactions)
+		account.DeltaValue = GetDeltaValue(account.NativeBalance, account.TotalBought, account.TotalSold)
+		print("DeltaValue: ", account.DeltaValue)
+
 		print("_______________________________End Account_____________________________________________")
 		accounts.append(account)
 
@@ -57,7 +59,7 @@ def GetTransactions(accountId):
 		transaction.NativeAmount = jsonTransaction["native_amount"]["amount"]
 		transaction.NativeCurrency = jsonTransaction["native_amount"]["currency"]
 
-		# PrintTransaction(transaction)
+		PrintTransaction(transaction)
 
 		transactions.append(transaction)
 
@@ -75,9 +77,24 @@ def GetCurrentExchangeRate(accountCurrency, nativeCurrency):
 	jsonExchangeRates = json.loads(json.dumps(Client.get_exchange_rates(currency=accountCurrency)))
 	return jsonExchangeRates["rates"][nativeCurrency]
 
-def GetDeltaValue(Balance, NativeBalance, exchangeRate):
+def GetTotalBought(transactions):
+	total = 0
+	for transaction in transactions:
+		if (transaction.TransactionType != "sell"):
+			total += float(transaction.NativeAmount)
+	print(total)
+	return total
 
-	pass
+def GetTotalSold(transactions):
+	total = 0
+	for transaction in transactions:
+		if (transaction.TransactionType == "sell"):
+			total += float(transaction.NativeAmount)
+	return total
+
+def GetDeltaValue(nativeBalance, totalBought, totalSold):
+	delta = float(nativeBalance) - float(totalBought) + float(totalSold)
+	return delta
 
 def GetBuys(accountId):
 	jsonBuys = json.loads(json.dumps(Client.get_buys(accountId)))
@@ -86,6 +103,8 @@ def GetBuys(accountId):
 	for jsonBuy in jsonBuys["data"]:
 		buy = Buy()
 
+		if (jsonBuy["status"] != "completed"):
+			continue
 		buy.BuyId = jsonBuy["id"]
 		buy.Amount = jsonBuy["amount"]["amount"]
 		buy.AmountCurrency = jsonBuy["amount"]["currency"]
