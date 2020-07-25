@@ -1,8 +1,16 @@
 class Sell():
-	def __init__(self):
-		self.SellId = None
-		self.Amount = None
-		self.AmountCurrency = None
-		self.TotalPaid = None
-		self.TotalCurrency = None
-		self.Subtotal = None
+	def __init__(
+		self,
+		sellId = str,
+		amount = float,
+		amountCurrency = str,
+		totalPaid = float,
+		totalCurrency = str,
+		subtotal = float
+		):
+		self.SellId = sellId
+		self.Amount = amount
+		self.AmountCurrency = amountCurrency
+		self.TotalPaid = totalPaid
+		self.TotalCurrency = totalCurrency
+		self.Subtotal = subtotal

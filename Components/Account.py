@@ -1,12 +1,18 @@
 class Account():
-	def __init__(self):
-		self.AccountId = None
-		self.Balance = None
-		self.AccountCurrency = None
-		self.NativeBalance = None
-		self.NativeCurrency = None
-		self.Transactions = None
-		self.ExchangeRate = None
-		self.TotalBought = None
-		self.TotalSold = None
-		self.DeltaValue = None
+	def __init__(
+		self,
+		accountId = str,
+		balance = float,
+		accountCurrency = str,
+		nativeBalance = float,
+		nativeCurrency = str,
+		transactions = list,
+		exchangeRate = float,
+	):
+		self.AccountId = accountId
+		self.Balance = balance
+		self.AccountCurrency = accountCurrency
+		self.NativeBalance = nativeBalance
+		self.NativeCurrency = nativeCurrency
+		self.Transactions = transactions
+		self.ExchangeRate = exchangeRate

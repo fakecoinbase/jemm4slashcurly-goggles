@@ -8,34 +8,74 @@ import json
 def main():
 	jsonAccounts = json.loads(json.dumps(CoinbaseClient.get_accounts()))
 	accounts = GetAccounts(jsonAccounts)
+
+	PrintAccountAndTransactionDataFrames(accounts)
+
+def PrintAccountAndTransactionDataFrames(accounts):
 	accountIdKey = "Account ID"
 	balanceKey = "Balance"
 	accountCurrencyKey = "Account Currency"
 	nativeBalanceKey = "Native Balance"
 	nativeCurrencyKey = "Native Currency"
 	exchangeRateKey = "Exchange Rate"
+	totalBoughtKey = "Total Bought"
+	totalSoldKey = "Total Sold"
 
 	accountDict = {
-		accountIdKey: [],
-		balanceKey: [],
-		accountCurrencyKey: [],
-		nativeBalanceKey: [],
-		nativeCurrencyKey: [],
-		exchangeRateKey: [],
-		}
+			accountIdKey: [],
+			balanceKey: [],
+			accountCurrencyKey: [],
+			nativeBalanceKey: [],
+			nativeCurrencyKey: [],
+			exchangeRateKey: [],
+			totalBoughtKey: [],
+			totalSoldKey: []
+			}
 
 	for account in accounts:
-		accountDict[accountIdKey].append(account.AccountId)
-		accountDict[balanceKey].append(account.Balance)
-		accountDict[accountCurrencyKey].append(account.AccountCurrency)
-		accountDict[nativeBalanceKey].append(account.NativeBalance)
-		accountDict[nativeCurrencyKey].append(account.NativeCurrency)
-		accountDict[exchangeRateKey].append(account.ExchangeRate)
+			accountDict[accountIdKey].append(account.AccountId)
+			accountDict[balanceKey].append(account.Balance)
+			accountDict[accountCurrencyKey].append(account.AccountCurrency)
+			accountDict[nativeBalanceKey].append(account.NativeBalance)
+			accountDict[nativeCurrencyKey].append(account.NativeCurrency)
+			accountDict[exchangeRateKey].append(account.ExchangeRate)
+			accountDict[totalBoughtKey].append(account.TotalBought)
+			accountDict[totalSoldKey].append(account.TotalSold)
 
-	df = pd.DataFrame(accountDict)
+			transactionDict = GetTransactionDict(account)
+
 	pd.set_option("display.max_rows", None, "display.max_columns", None)
+	accountDataFrame = pd.DataFrame(accountDict)
+	print("Account Data Frame\n", accountDataFrame)
 
-	print(df)
+	transactionDataFrame = pd.DataFrame(transactionDict)
+	print("Transactions Data Frame\n", transactionDataFrame)
+
+def GetTransactionDict(account):
+	transactionsKey = "Transactions"
+	transactionIdKey = "Transaction ID"
+	transactionTypeKey = "Transaction Type"
+	amountKey = "Transaction Amount"
+	amountCurrencyKey = "Transaction Currency"
+	nativeAmountKey = "Transaction Native Amount"
+	transactionNativeCurrencyKey = "Transaction Native Currency"
+
+	transactionDict = {
+					transactionIdKey:[],
+					transactionTypeKey: [],
+					amountKey: [],
+					amountCurrencyKey: [],
+					nativeAmountKey: [],
+					transactionNativeCurrencyKey: []
+					}
+	for transaction in account.Transactions:
+			transactionDict[transactionIdKey].append(transaction.TransactionId)
+			transactionDict[transactionTypeKey].append(transaction.TransactionType)
+			transactionDict[amountKey].append(transaction.Amount)
+			transactionDict[amountCurrencyKey].append(transaction.AmountCurrency)
+			transactionDict[nativeAmountKey].append(transaction.NativeAmount)
+			transactionDict[transactionNativeCurrencyKey].append(transaction.NativeCurrency)
+	return transactionDict
 
 
 def GetAccounts(jsonAccounts):
@@ -50,25 +90,10 @@ def GetAccounts(jsonAccounts):
 		account.NativeBalance = jsonAccount["native_balance"]["amount"]
 		account.NativeCurrency = jsonAccount["native_balance"]["currency"]
 		account.ExchangeRate = GetCurrentExchangeRate(account.AccountCurrency, account.NativeCurrency)
-
-		# print("\n\n_______________________________Account_____________________________________________")
-		# print("Account ID: ", account.AccountId)
-		# print("Balance: ", account.Balance, account.AccountCurrency)
-		# print("Native Balance: ", account.NativeBalance, account.NativeCurrency)
-		# print("Current exchange rate: ", account.ExchangeRate, account.NativeCurrency)
-		# print("-------------------------------Gain/Loss---------------------------------------------")
-		# print("Gain/Loss: ", account.DeltaValue)
-		# print("-------------------------------End Gain/Loss---------------------------------------------")
-
-		# print("-------------------------------Transactions---------------------------------------------")
 		account.Transactions = GetTransactions(account.AccountId)
-		# print("-------------------------------End Transactions---------------------------------------------")
 		account.TotalBought = GetTotalBought(account.Transactions)
 		account.TotalSold = GetTotalSold(account.Transactions)
-		account.DeltaValue = GetDeltaValue(account.NativeBalance, account.TotalBought, account.TotalSold)
-		# print("DeltaValue: ", account.DeltaValue)
 
-		# print("_______________________________End Account_____________________________________________")
 		accounts.append(account)
 
 	return accounts
@@ -88,19 +113,9 @@ def GetTransactions(accountId):
 		transaction.NativeAmount = jsonTransaction["native_amount"]["amount"]
 		transaction.NativeCurrency = jsonTransaction["native_amount"]["currency"]
 
-		# PrintTransaction(transaction)
-
 		transactions.append(transaction)
 
 	return transactions
-
-def PrintTransaction(transaction):
-    print("-------------------------------Transaction---------------------------------------------")
-    print("ID: ", transaction.TransactionId)
-    print("Type: ", transaction.TransactionType)
-    print("Amount: ", transaction.Amount, transaction.AmountCurrency)
-    print("Native Amount: ", transaction.NativeAmount, transaction.NativeCurrency)
-    print("-------------------------------End Transaction---------------------------------------------")
 
 def GetCurrentExchangeRate(accountCurrency, nativeCurrency):
 	jsonExchangeRates = json.loads(json.dumps(CoinbaseClient.get_exchange_rates(currency=accountCurrency)))

@@ -1,8 +1,16 @@
 class Buy():
-	def __init__(self):
-		self.BuyId = None
-		self.Amount = None
-		self.AmountCurrency = None
-		self.TotalPaid = None
-		self.TotalCurrency = None
-		self.Subtotal = None
+	def __init__(
+		self,
+		buyId = str,
+		amount = float,
+		amountCurrency = str,
+		totalPaid = float,
+		totalCurrency = str,
+		subtotal = float
+		):
+		self.BuyId = buyId
+		self.Amount = amount
+		self.AmountCurrency = amountCurrency
+		self.TotalPaid = totalPaid
+		self.TotalCurrency = totalCurrency
+		self.Subtotal = subtotal
