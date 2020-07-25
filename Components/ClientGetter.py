@@ -12,4 +12,5 @@ class ClientGetter():
 		return client
 
 load_dotenv()
-Client = ClientGetter(os.getenv("API_KEY"), os.getenv("API_SECRET")).GetClient()
+CoinbaseClient = ClientGetter(os.getenv("API_KEY"), os.getenv("API_SECRET")).GetClient()
+ProClient = ClientGetter(os.getenv("PRO_API_KEY"), os.getenv("PRO_SECRET")).GetClient()

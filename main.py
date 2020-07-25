@@ -1,11 +1,11 @@
-from Components.ClientGetter import Client
+from Components.ClientGetter import CoinbaseClient
 from Components.Account import Account
 from Components.Transaction import Transaction
 from Components.Buy import Buy
 import json
 
 def main():
-	jsonAccounts = json.loads(json.dumps(Client.get_accounts()))
+	jsonAccounts = json.loads(json.dumps(CoinbaseClient.get_accounts()))
 	accounts = GetAccounts(jsonAccounts)
 
 
@@ -45,7 +45,7 @@ def GetAccounts(jsonAccounts):
 	return accounts
 
 def GetTransactions(accountId):
-	jsonTransactions = json.loads(json.dumps(Client.get_transactions(accountId)))
+	jsonTransactions = json.loads(json.dumps(CoinbaseClient.get_transactions(accountId)))
 
 	transactions = []
 
@@ -74,7 +74,7 @@ def PrintTransaction(transaction):
     print("-------------------------------End Transaction---------------------------------------------")
 
 def GetCurrentExchangeRate(accountCurrency, nativeCurrency):
-	jsonExchangeRates = json.loads(json.dumps(Client.get_exchange_rates(currency=accountCurrency)))
+	jsonExchangeRates = json.loads(json.dumps(CoinbaseClient.get_exchange_rates(currency=accountCurrency)))
 	return jsonExchangeRates["rates"][nativeCurrency]
 
 def GetTotalBought(transactions):
@@ -97,7 +97,7 @@ def GetDeltaValue(nativeBalance, totalBought, totalSold):
 	return delta
 
 def GetBuys(accountId):
-	jsonBuys = json.loads(json.dumps(Client.get_buys(accountId)))
+	jsonBuys = json.loads(json.dumps(CoinbaseClient.get_buys(accountId)))
 	buys = []
 
 	for jsonBuy in jsonBuys["data"]:
@@ -117,7 +117,7 @@ def GetBuys(accountId):
 	return buys
 
 def GetSells(accountId):
-	jsonSells = json.loads(json.dumps(Client.get_buys(accountId)))
+	jsonSells = json.loads(json.dumps(CoinbaseClient.get_buys(accountId)))
 	sells = []
 
 	for jsonSell in jsonSells["data"]:
