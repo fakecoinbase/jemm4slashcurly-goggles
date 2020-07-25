@@ -2,11 +2,40 @@ from Components.ClientGetter import CoinbaseClient
 from Components.Account import Account
 from Components.Transaction import Transaction
 from Components.Buy import Buy
+import pandas as pd
 import json
 
 def main():
 	jsonAccounts = json.loads(json.dumps(CoinbaseClient.get_accounts()))
 	accounts = GetAccounts(jsonAccounts)
+	accountIdKey = "Account ID"
+	balanceKey = "Balance"
+	accountCurrencyKey = "Account Currency"
+	nativeBalanceKey = "Native Balance"
+	nativeCurrencyKey = "Native Currency"
+	exchangeRateKey = "Exchange Rate"
+
+	accountDict = {
+		accountIdKey: [],
+		balanceKey: [],
+		accountCurrencyKey: [],
+		nativeBalanceKey: [],
+		nativeCurrencyKey: [],
+		exchangeRateKey: [],
+		}
+
+	for account in accounts:
+		accountDict[accountIdKey].append(account.AccountId)
+		accountDict[balanceKey].append(account.Balance)
+		accountDict[accountCurrencyKey].append(account.AccountCurrency)
+		accountDict[nativeBalanceKey].append(account.NativeBalance)
+		accountDict[nativeCurrencyKey].append(account.NativeCurrency)
+		accountDict[exchangeRateKey].append(account.ExchangeRate)
+
+	df = pd.DataFrame(accountDict)
+	pd.set_option("display.max_rows", None, "display.max_columns", None)
+
+	print(df)
 
 
 def GetAccounts(jsonAccounts):
@@ -22,24 +51,24 @@ def GetAccounts(jsonAccounts):
 		account.NativeCurrency = jsonAccount["native_balance"]["currency"]
 		account.ExchangeRate = GetCurrentExchangeRate(account.AccountCurrency, account.NativeCurrency)
 
-		print("\n\n_______________________________Account_____________________________________________")
-		print("Account ID: ", account.AccountId)
-		print("Balance: ", account.Balance, account.AccountCurrency)
-		print("Native Balance: ", account.NativeBalance, account.NativeCurrency)
-		print("Current exchange rate: ", account.ExchangeRate, account.NativeCurrency)
-		print("-------------------------------Gain/Loss---------------------------------------------")
-		print("Gain/Loss: ", account.DeltaValue)
-		print("-------------------------------End Gain/Loss---------------------------------------------")
+		# print("\n\n_______________________________Account_____________________________________________")
+		# print("Account ID: ", account.AccountId)
+		# print("Balance: ", account.Balance, account.AccountCurrency)
+		# print("Native Balance: ", account.NativeBalance, account.NativeCurrency)
+		# print("Current exchange rate: ", account.ExchangeRate, account.NativeCurrency)
+		# print("-------------------------------Gain/Loss---------------------------------------------")
+		# print("Gain/Loss: ", account.DeltaValue)
+		# print("-------------------------------End Gain/Loss---------------------------------------------")
 
-		print("-------------------------------Transactions---------------------------------------------")
+		# print("-------------------------------Transactions---------------------------------------------")
 		account.Transactions = GetTransactions(account.AccountId)
-		print("-------------------------------End Transactions---------------------------------------------")
+		# print("-------------------------------End Transactions---------------------------------------------")
 		account.TotalBought = GetTotalBought(account.Transactions)
 		account.TotalSold = GetTotalSold(account.Transactions)
 		account.DeltaValue = GetDeltaValue(account.NativeBalance, account.TotalBought, account.TotalSold)
-		print("DeltaValue: ", account.DeltaValue)
+		# print("DeltaValue: ", account.DeltaValue)
 
-		print("_______________________________End Account_____________________________________________")
+		# print("_______________________________End Account_____________________________________________")
 		accounts.append(account)
 
 	return accounts
@@ -59,7 +88,7 @@ def GetTransactions(accountId):
 		transaction.NativeAmount = jsonTransaction["native_amount"]["amount"]
 		transaction.NativeCurrency = jsonTransaction["native_amount"]["currency"]
 
-		PrintTransaction(transaction)
+		# PrintTransaction(transaction)
 
 		transactions.append(transaction)
 
@@ -82,7 +111,7 @@ def GetTotalBought(transactions):
 	for transaction in transactions:
 		if (transaction.TransactionType != "sell"):
 			total += float(transaction.NativeAmount)
-	print(total)
+	# print(total)
 	return total
 
 def GetTotalSold(transactions):
