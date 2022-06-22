@@ -9,7 +9,7 @@ coinbase==2.1.0
 colorama==0.4.3
 idna==2.10
 more-itertools==8.4.0
-numpy==1.19.1
+numpy==1.22.0
 packaging==20.4
 pandas==1.0.5
 pathspec==0.8.0
